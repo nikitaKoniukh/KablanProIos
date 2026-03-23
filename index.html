@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KablanPro – Contractor Finance Manager</title>
+  <meta name="description" content="The all-in-one financial management app for construction contractors. Track projects, expenses, invoices, and workers — all in one place." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --blue-deep: #0a1628;
+      --blue-mid: #0d1f3c;
+      --blue-grid: rgba(255,255,255,0.06);
+      --white: #ffffff;
+      --white-dim: rgba(255,255,255,0.75);
+      --white-faint: rgba(255,255,255,0.35);
+      --orange: #ff8c42;
+      --orange-dim: rgba(255,140,66,0.15);
+      --cyan: #4dd9ff;
+      --cyan-dim: rgba(77,217,255,0.1);
+      --border: rgba(255,255,255,0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--blue-deep);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Blueprint grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--blue-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--blue-grid) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      background: rgba(10, 22, 40, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .nav-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .nav-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 0.5px;
+    }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a {
+      color: var(--white-dim);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .btn-nav {
+      background: var(--orange);
+      color: var(--blue-deep) !important;
+      font-weight: 600 !important;
+      padding: 8px 18px;
+      border-radius: 6px;
+      transition: opacity .2s !important;
+    }
+    .btn-nav:hover { opacity: 0.85; }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+    }
+    .hero-inner { max-width: 780px; }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--cyan);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 1px solid rgba(77,217,255,0.3);
+      background: var(--cyan-dim);
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 32px;
+      animation: fadeUp .6s ease both;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero-app-icon {
+      width: 120px; height: 120px;
+      border-radius: 26px;
+      overflow: hidden;
+      margin: 0 auto 28px;
+      border: 2px solid var(--border);
+      box-shadow: 0 0 60px rgba(77,217,255,0.15), 0 20px 60px rgba(0,0,0,0.5);
+      animation: fadeUp .6s .1s ease both;
+    }
+    .hero-app-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(52px, 9vw, 88px);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+      animation: fadeUp .6s .15s ease both;
+    }
+    h1 span { color: var(--orange); }
+
+    .hero-subtitle-line {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(20px, 3.5vw, 28px);
+      font-weight: 600;
+      color: var(--white-dim);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      animation: fadeUp .6s .2s ease both;
+    }
+
+    .hero-desc {
+      font-size: 18px;
+      color: var(--white-faint);
+      line-height: 1.6;
+      max-width: 540px;
+      margin: 0 auto 40px;
+      animation: fadeUp .6s .25s ease both;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp .6s .3s ease both;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--orange);
+      color: var(--blue-deep);
+      font-weight: 700;
+      font-size: 15px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 24px rgba(255,140,66,0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(255,140,66,0.5);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: var(--white);
+      font-weight: 600;
+      font-size: 15px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      transition: background .2s, border-color .2s;
+    }
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      margin-top: 64px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      animation: fadeUp .6s .4s ease both;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--orange);
+      line-height: 1;
+    }
+    .stat-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--white-faint);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── SECTION WRAPPER ─── */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 100px 24px;
+    }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+
+    .section-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--orange);
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 800;
+      line-height: 1.05;
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      color: var(--white-faint);
+      font-size: 17px;
+      max-width: 500px;
+      line-height: 1.6;
+      margin-bottom: 56px;
+    }
+
+    /* ─── FEATURES GRID ─── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .feature-card {
+      background: var(--blue-mid);
+      padding: 32px;
+      transition: background .2s;
+    }
+    .feature-card:hover { background: rgba(255,255,255,0.04); }
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .feature-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .feature-desc {
+      font-size: 14px;
+      color: var(--white-faint);
+      line-height: 1.6;
+    }
+
+    /* ─── TECH STRIP ─── */
+    .tech-strip {
+      background: var(--blue-mid);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 24px;
+    }
+    .tech-strip-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .tech-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--white-faint);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .tech-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--cyan);
+      background: var(--cyan-dim);
+      border: 1px solid rgba(77,217,255,0.2);
+      padding: 5px 14px;
+      border-radius: 20px;
+    }
+
+    /* ─── PRICING ─── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .plan-card {
+      background: var(--blue-mid);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 32px;
+      position: relative;
+      transition: transform .2s;
+    }
+    .plan-card:hover { transform: translateY(-4px); }
+    .plan-card.featured {
+      border-color: var(--orange);
+      box-shadow: 0 0 40px rgba(255,140,66,0.15);
+    }
+    .plan-badge {
+      position: absolute;
+      top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--orange);
+      color: var(--blue-deep);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .plan-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .plan-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--orange);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .plan-price span {
+      font-size: 18px;
+      color: var(--white-faint);
+    }
+    .plan-period {
+      font-size: 13px;
+      color: var(--white-faint);
+      margin-bottom: 28px;
+    }
+    .plan-features { list-style: none; margin-bottom: 28px; }
+    .plan-features li {
+      font-size: 14px;
+      color: var(--white-dim);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+    }
+    .plan-features li:last-child { border-bottom: none; }
+    .plan-features .val { color: var(--white); font-weight: 600; }
+    .plan-features .val.free { color: var(--white-faint); }
+    .btn-plan {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      transition: opacity .2s, transform .2s;
+    }
+    .btn-plan.primary {
+      background: var(--orange);
+      color: var(--blue-deep);
+      box-shadow: 0 4px 20px rgba(255,140,66,0.35);
+    }
+    .btn-plan.primary:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-plan.ghost {
+      border: 1px solid var(--border);
+      color: var(--white-dim);
+    }
+    .btn-plan.ghost:hover { background: rgba(255,255,255,0.05); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: gap;
+      gap: 20px;
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .footer-icon {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .footer-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .footer-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      font-size: 13px;
+      color: var(--white-faint);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--white); }
+    .footer-copy {
+      font-size: 12px;
+      color: var(--white-faint);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 640px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      section { padding: 72px 20px; }
+      .hero-stats { gap: 24px; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-icon"><img src="assets/app-icon.jpg" alt="KablanPro" /></div>
+    <div class="nav-name">KablanPro</div>
+  </div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="support.html">Support</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms-of-use.html">Terms</a>
+    <a href="#download" class="btn-nav">Download</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">iOS App · Available on App Store</div>
+
+    <div class="hero-app-icon">
+      <img src="assets/app-icon.jpg" alt="KablanPro App Icon" />
+    </div>
+
+    <h1>KABLAN<span>PRO</span></h1>
+    <div class="hero-subtitle-line">Contractor Finance Manager</div>
+
+    <p class="hero-desc">
+      The all-in-one financial management app built for construction contractors.
+      Track projects, expenses, invoices, workers, and analytics — all in one place.
+    </p>
+
+    <div class="hero-cta">
+      <a href="#download" class="btn-primary" id="download">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        Download on App Store
+      </a>
+      <a href="#features" class="btn-secondary">
+        See Features ↓
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Languages</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">8</div>
+        <div class="stat-label">Currencies</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">iOS 17</div>
+        <div class="stat-label">Minimum</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">iCloud</div>
+        <div class="stat-label">Sync</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TECH STRIP -->
+<div class="tech-strip">
+  <div class="tech-strip-inner">
+    <div class="tech-label">Built with</div>
+    <div class="tech-tags">
+      <span class="tech-tag">SwiftUI</span>
+      <span class="tech-tag">SwiftData</span>
+      <span class="tech-tag">CloudKit</span>
+      <span class="tech-tag">Swift Charts</span>
+      <span class="tech-tag">StoreKit 2</span>
+      <span class="tech-tag">Vision OCR</span>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <div class="section-tag">// Features</div>
+    <div class="section-title">Everything a contractor needs</div>
+    <p class="section-desc">From the first nail to the final invoice — manage your entire business from your iPhone.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">📁</span>
+        <div class="feature-title">Project Management</div>
+        <p class="feature-desc">Track budgets, monitor financial summaries, and get color-coded budget utilization alerts at 80% and 100%.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">💸</span>
+        <div class="feature-title">Expense Tracking</div>
+        <p class="feature-desc">Log expenses by category — Materials, Labor, Equipment, Miscellaneous — with advanced filtering and search.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🧾</span>
+        <div class="feature-title">Invoice Management</div>
+        <p class="feature-desc">Create and track invoices with Paid, Pending, and Overdue statuses. Automatic overdue detection included.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">👥</span>
+        <div class="feature-title">Client Directory</div>
+        <p class="feature-desc">Maintain a full client database with contact details. Auto-create clients when adding new projects or invoices.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">👷</span>
+        <div class="feature-title">Labor & Workers</div>
+        <p class="feature-desc">Register workers with Hourly, Daily, Contract, or Subcontractor types. Dual pay rates with automatic calculations.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📊</span>
+        <div class="feature-title">Financial Analytics</div>
+        <p class="feature-desc">Full dashboard with donut charts, trend lines, category breakdowns, top projects, and budget utilization — powered by Swift Charts.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📷</span>
+        <div class="feature-title">OCR Invoice Scanning</div>
+        <p class="feature-desc">Scan receipts with your camera. On-device OCR extracts amount, date, and description automatically — no internet needed.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">☁️</span>
+        <div class="feature-title">iCloud Sync</div>
+        <p class="feature-desc">All your data syncs automatically across all your Apple devices via CloudKit. Works even for deletions, instantly.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔔</span>
+        <div class="feature-title">Smart Notifications</div>
+        <p class="feature-desc">Get reminders for invoice due dates, overdue alerts, and budget warnings. Tap to navigate directly to the relevant item.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="background: rgba(0,0,0,0.2);">
+  <div class="section-inner" style="text-align:center;">
+    <div class="section-tag" style="text-align:center;">// Pricing</div>
+    <div class="section-title" style="text-align:center;">Start free. Upgrade when ready.</div>
+    <p class="section-desc" style="margin: 0 auto 56px;">No credit card required. Manage up to 1 project and 2 workers completely free.</p>
+
+    <div class="pricing-grid">
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0<span>/mo</span></div>
+        <div class="plan-period">Forever free</div>
+        <ul class="plan-features">
+          <li><span>Projects</span><span class="val free">1</span></li>
+          <li><span>Workers</span><span class="val free">2</span></li>
+          <li><span>Expenses</span><span class="val">Unlimited</span></li>
+          <li><span>Invoices</span><span class="val">Unlimited</span></li>
+          <li><span>iCloud Sync</span><span class="val">✓</span></li>
+          <li><span>Analytics</span><span class="val">✓</span></li>
+        </ul>
+        <a href="#download" class="btn-plan ghost">Get Started</a>
+      </div>
+
+      <div class="plan-card featured">
+        <div class="plan-badge">Best Value</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">★<span> Subscription</span></div>
+        <div class="plan-period">Monthly or Yearly via App Store</div>
+        <ul class="plan-features">
+          <li><span>Projects</span><span class="val">Unlimited</span></li>
+          <li><span>Workers</span><span class="val">Unlimited</span></li>
+          <li><span>Expenses</span><span class="val">Unlimited</span></li>
+          <li><span>Invoices</span><span class="val">Unlimited</span></li>
+          <li><span>iCloud Sync</span><span class="val">✓</span></li>
+          <li><span>Analytics</span><span class="val">✓</span></li>
+        </ul>
+        <a href="#download" class="btn-plan primary">Download & Subscribe</a>
+      </div>
+    </div>
+
+    <p style="margin-top:24px; font-size:13px; color:var(--white-faint);">
+      Subscriptions managed by Apple. Cancel anytime in iOS Settings.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-icon"><img src="assets/app-icon.jpg" alt="KablanPro" /></div>
+      <div class="footer-name">KablanPro</div>
+    </div>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms-of-use.html">Terms of Use</a>
+      <a href="https://github.com/nikitakoniukh" target="_blank">GitHub</a>
+    </div>
+    <div class="footer-copy">© 2026 Nikita Koniukh</div>
+  </div>
+</footer>
+
+</body>
+</html>
